@@ -363,79 +363,6 @@ void _MergeSort(int* arr, int left, int right, int* tmp)
 	}
 }
 
-void _MergeSortNonR(int* a, int n)//非递归实现
-{
-	int* tmp = (int*)malloc(sizeof(int) * n);
-	if (tmp == NULL)
-	{
-		perror("malloc fail");
-		return;
-	}
-
-	int gap = 1;
-	while (gap < n)
-	{
-		// gap个数据  gap个数据归并
-		for (int j = 0; j < n; j += 2 * gap)
-		{
-			// 归并 取小的尾插
-			int begin1 = j, end1 = j + gap - 1;
-			int begin2 = j + gap, end2 = j + 2 * gap - 1;
-
-			// 第一组越界
-			if (end1 >= n)
-			{
-				break;
-			}
-
-			// 第二组全部越界
-			if (begin2 >= n)
-			{
-				break;
-			}
-
-			// 第二组部分越界
-			if (end2 >= n)
-			{
-				// 修正一下end2，继续归并
-				end2 = n - 1;
-			}
-
-			int i = j;
-			while (begin1 <= end1 && begin2 <= end2)
-			{
-				if (a[begin1] <= a[begin2])
-				{
-					tmp[i++] = a[begin1++];
-				}
-				else
-				{
-					tmp[i++] = a[begin2++];
-				}
-			}
-
-			while (begin1 <= end1)
-			{
-				tmp[i++] = a[begin1++];
-			}
-
-			while (begin2 <= end2)
-			{
-				tmp[i++] = a[begin2++];
-			}
-
-			// 拷贝回原数组 -- 归并哪部分就拷贝哪部分回去
-			memcpy(a + j, tmp + j, (end2 - j + 1) * sizeof(int));
-		}
-
-		gap *= 2;
-
-	}
-
-	free(tmp);
-	tmp = NULL;
-}
-
 void MergeSort(int* arr, int size)//时间复杂度O(N*logN);空间复杂度O(N)
 {
 	int* tmp = (int*)malloc(size * sizeof(int));
@@ -446,9 +373,6 @@ void MergeSort(int* arr, int size)//时间复杂度O(N*logN);空间复杂度O(N)
 	}
 
 	_MergeSort(arr, 0, size - 1, tmp);
-	//_MergeSortNonR(arr, size);
-
-
 	free(tmp);
 	tmp = NULL;
 }
