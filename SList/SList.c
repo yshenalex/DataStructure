@@ -63,14 +63,14 @@ void SListPopBack(SLTNode** pphead)
 	assert(pphead);
 	assert(*pphead);
 
-	if ((*pphead)->next == NULL)//1.Ò»¸ö½Úµã
+	if ((*pphead)->next == NULL)//1.ä¸€ä¸ªèŠ‚ç‚¹
 	{
 		free(*pphead);
 		*pphead = NULL;
 	}
-	else//2.Á½¸ö¼°ÒÔÉÏ½Úµã
+	else//2.ä¸¤ä¸ªåŠä»¥ä¸ŠèŠ‚ç‚¹
 	{
-		//·¨Ò»£º
+		//æ³•ä¸€ï¼š
 		SLTNode* prev = NULL;
 		SLTNode* tail = *pphead;
 		while (tail->next != NULL)
@@ -82,7 +82,7 @@ void SListPopBack(SLTNode** pphead)
 		tail = NULL;
 		prev->next = NULL;
 	
-		//·¨¶ş£º
+		//æ³•äºŒï¼š
 		//SLTNode* tail = *pphead;
 		//while (tail->next->next != NULL)
 		//{
@@ -103,7 +103,7 @@ void SListPopFront(SLTNode** pphead)
 	*pphead = next;
 }
 
-SLTNode* SListFind(SLTNode* phead, SLTDataType x)//ÕÒµ½µÚÒ»¸öÊıÖµµÈÓÚÕâ¸öÊıµÄ½Úµã
+SLTNode* SListFind(SLTNode* phead, SLTDataType x)//æ‰¾åˆ°ç¬¬ä¸€ä¸ªæ•°å€¼ç­‰äºè¿™ä¸ªæ•°çš„èŠ‚ç‚¹
 {
 	SLTNode* cur = phead;
 	while (cur != NULL)
@@ -121,7 +121,7 @@ void SListFindPrintAll(SLTNode* phead, SLTDataType x)
 	int i = 1;
 	while (pos != NULL)
 	{
-		printf("µÚ%d¸öpos½Úµã£º%p->%d\n", i++, pos, x);
+		printf("ç¬¬%dä¸ªposèŠ‚ç‚¹ï¼š%p->%d\n", i++, pos, x);
 		pos = SListFind(pos->next, x);
 	}
 }
@@ -166,12 +166,12 @@ void SListErase(SLTNode** pphead, SLTNode* pos)
 
 	if (*pphead == pos)
 	{
-		//(1)×ÔÊµÏÖ£º
+		//(1)è‡ªå®ç°ï¼š
 		//*pphead = pos->next;
 		//free(pos);
 		//pos = NULL;
 
-		//(2)½èÓÃSListPopFront()£º
+		//(2)å€Ÿç”¨SListPopFront()ï¼š
 		SListPopFront(pphead);
 	}
 	else
@@ -183,20 +183,20 @@ void SListErase(SLTNode** pphead, SLTNode* pos)
 		}
 		prev->next = pos->next;
 		free(pos);
-		pos = NULL;//ÖÃ²»ÖÃ¿ÕÎŞËùÎ½£¬ÒòÎªposÊÇĞÎ²Î£¬ÊÇÊµ²ÎµÄÁÙÊ±¿½±´¡£
-		//ÄãÖÃ¿Õºó²»»áÓ°ÏìÊµ²Î,¶øÇÒ³öÁËº¯ÊıposÒÑ¾­Ïú»ÙÁË
+		pos = NULL;//ç½®ä¸ç½®ç©ºæ— æ‰€è°“ï¼Œå› ä¸ºposæ˜¯å½¢å‚ï¼Œæ˜¯å®å‚çš„ä¸´æ—¶æ‹·è´ã€‚
+		//ä½ ç½®ç©ºåä¸ä¼šå½±å“å®å‚,è€Œä¸”å‡ºäº†å‡½æ•°poså·²ç»é”€æ¯äº†
 	}
 }
 
 void SListEraseAfter(SLTNode* pos)
 {
 	assert(pos);
-	assert(pos->next);//×îºóÒ»¸ö½ÚµãÃ»ÓĞÏÂÒ»¸ö¿ÉÒÔÉ¾³ı£¬Ö±½Ó¶ÏÑÔ
+	assert(pos->next);//æœ€åä¸€ä¸ªèŠ‚ç‚¹æ²¡æœ‰ä¸‹ä¸€ä¸ªå¯ä»¥åˆ é™¤ï¼Œç›´æ¥æ–­è¨€
 
 	SLTNode* next = pos->next;
 	pos->next = next->next;
 	free(next);
-	next = NULL;//Í¬ÉÏ£¬ÖÃ²»ÖÃ¿ÕÎŞËùÎ½
+	next = NULL;//åŒä¸Šï¼Œç½®ä¸ç½®ç©ºæ— æ‰€è°“
 }
 
 
@@ -213,7 +213,6 @@ void SListDestory(SLTNode** pphead)
 	}
 	*pphead = NULL;
 }
-
 
 
 

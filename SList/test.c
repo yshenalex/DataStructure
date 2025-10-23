@@ -4,7 +4,7 @@ void TestSList1()
 {
 	SLTNode* plist = NULL;
 	printf("-----------------------\n");
-	printf("Î²²å1£¬2£¬3£¬4£¬5£º\n");
+	printf("å°¾æ’1ï¼Œ2ï¼Œ3ï¼Œ4ï¼Œ5ï¼š\n");
 	SListPushBack(&plist, 1);
 	SListPushBack(&plist, 1);
 	SListPushBack(&plist, 2);
@@ -12,36 +12,36 @@ void TestSList1()
 	SListPushBack(&plist, 4);
 	SListPrint(plist);
 	printf("-----------------------\n");
-	printf("Í·²å10£¬20£¬30£¬40£º\n");
+	printf("å¤´æ’10ï¼Œ20ï¼Œ30ï¼Œ40ï¼š\n");
 	SListPushFront(&plist, 10);
 	SListPushFront(&plist, 20);
 	SListPushFront(&plist, 30);
 	SListPushFront(&plist, 40);
 	SListPrint(plist);
 	printf("-----------------------\n");
-	printf("Î²É¾3´Î£º\n");
+	printf("å°¾åˆ 3æ¬¡ï¼š\n");
 	SListPopBack(&plist);
 	SListPopBack(&plist);
 	SListPopBack(&plist);
 	SListPrint(plist);
 	printf("-----------------------\n");
-	printf("Í·É¾4´Î£º\n");
+	printf("å¤´åˆ 4æ¬¡ï¼š\n");
 	SListPopFront(&plist);
 	SListPopFront(&plist);
 	SListPopFront(&plist);
 	SListPopFront(&plist);
 	SListPrint(plist);
 	printf("-----------------------\n");
-	printf("Î²²å2,3,4£º\n");
+	printf("å°¾æ’2,3,4ï¼š\n");
 	SListPushBack(&plist, 2);
 	SListPushBack(&plist, 3);
 	SListPushBack(&plist, 4);
 	SListPrint(plist);
 	printf("-----------------------\n");
-	printf("Ñ°ÕÒÊ×¸öÔªËØ1£º\n");
+	printf("å¯»æ‰¾é¦–ä¸ªå…ƒç´ 1ï¼š\n");
 	printf("%p\n", SListFind(plist,1));
 	printf("-----------------------\n");
-	printf("Ñ°ÕÒËùÓĞÔªËØ1£º\n");
+	printf("å¯»æ‰¾æ‰€æœ‰å…ƒç´ 1ï¼š\n");
 	SListFindPrintAll(plist, 1);
 }
 
@@ -51,7 +51,6 @@ int main()
 	TestSList1();
 	return 0;
 }
-
 
 
 

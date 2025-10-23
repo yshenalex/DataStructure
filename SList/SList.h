@@ -1,5 +1,4 @@
 #pragma once
-#define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<stdlib.h>
 #include<assert.h>
@@ -8,12 +7,12 @@
 typedef int SLTDataType;
 typedef struct SListNode
 {
-	SLTDataType data;//´æ´¢µÄÊı¾İ
-	struct SListNode* next;//Ö¸ÏòÏÂÒ»½Úµã
+	SLTDataType data;//å­˜å‚¨çš„æ•°æ®
+	struct SListNode* next;//æŒ‡å‘ä¸‹ä¸€èŠ‚ç‚¹
 }SLTNode;
 
 
-//¡¾º¯Êı½Ó¿Ú¡¿
+//ã€å‡½æ•°æ¥å£ã€‘
 SLTNode* BuyListNode(SLTDataType x);
 
 void SListPrint(SLTNode* phead);
@@ -26,14 +25,13 @@ void SListPopFront(SLTNode** pphead);
 SLTNode* SListFind(SLTNode* phead, SLTDataType x);
 void SListFindPrintAll(SLTNode* phead, SLTDataType x);
 
-void SListInsert(SLTNode** pphead, SLTNode* pos, SLTDataType x);//ÔÚposÎ»ÖÃÖ®Ç°²åÈëÒ»¸ö½Úµã
+void SListInsert(SLTNode** pphead, SLTNode* pos, SLTDataType x);//åœ¨posä½ç½®ä¹‹å‰æ’å…¥ä¸€ä¸ªèŠ‚ç‚¹
 void SListInsertAfter(SLTNode* pos, SLTDataType x);
 void SListErase(SLTNode** pphead, SLTNode* pos);
-void SListErase(SLTNode* pos);//É¾³ı¸ø¶¨Î»ÖÃÏÂÒ»½Úµã£¬²»Éæ¼°¸Ä±äphead,²»ÓÃ´«¶ş¼¶Ö¸Õë
+void SListEraseAfter(SLTNode* pos);//åˆ é™¤ç»™å®šä½ç½®ä¸‹ä¸€èŠ‚ç‚¹ï¼Œä¸æ¶‰åŠæ”¹å˜phead,ä¸ç”¨ä¼ äºŒçº§æŒ‡é’ˆ
 //void SListInsert(SLTNode* phead, int pos, SLTDataType x);
 
-void SListDestory(SLTNode* phead);
-
+void SListDestory(SLTNode** phead);
 
 
 
