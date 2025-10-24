@@ -1,6 +1,6 @@
-#include"SeqList.h"
+#include "SeqList.h"
 
-void PrintSeqList(SL* ps)
+void PrintSeqList(SL *ps)
 {
 	int i = 0;
 	for (i = 0; i < ps->size; i++)
@@ -9,7 +9,6 @@ void PrintSeqList(SL* ps)
 	}
 	printf("\n");
 }
-
 
 void TestSeqList1()
 {
@@ -41,7 +40,7 @@ void TestSeqList1()
 	PrintSeqList(&s1);
 	printf("---------------------------\n");
 	printf("寻找元素4：\n");
-	printf("%d\n",SeqListFind(&s1, 4));
+	printf("%d\n", SeqListFind(&s1, 4));
 	printf("---------------------------\n");
 	printf("下标2位置插入11，22，33，44，55：\n");
 	SeqListInsert(&s1, 2, 11);
@@ -64,41 +63,9 @@ void TestSeqList1()
 	SeqListDestory(&s1);
 }
 
-
 int main()
 {
 	TestSeqList1();
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
