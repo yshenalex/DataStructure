@@ -35,6 +35,11 @@ namespace OpenAddressing
 		}
 	};
 
+	/**
+	 * @brief 默认的T类型映射为size_t类型的方法
+	 * 
+	 * @tparam T 
+	 */
 	template <typename T>
 	struct DefaultFunctor
 	{
@@ -72,31 +77,18 @@ namespace OpenAddressing
 
 		bool insert(T val)
 		{
+			// HACK: 其实哈希表可能存在很多DELETED元素，看着很空实际很满，设计定期调整会比较好
 			if ((static_cast<float>(_n) / _data.size()) >= loadFactor)
-			{
-				HashTable<T, Functor> newHashTable;
-				newHashTable._data.resize(_data.size() * resizeFactor);
-				newHashTable._n = _n;
-				newHashTable._size = _size;
-				newHashTable._setDivisor(newHashTable._data.size());
-				for (int i = 0; i < _data.size(); i++)
-				{
-					if (_data[i].stat != EMPTY) // 空位置数据不要插入扩容后的哈希表
-						newHashTable.insert(_data[i].val);
-				}
+				_reHashing();
 
-				_data.swap(newHashTable._data);
-				_divisor = newHashTable._divisor;
-			}
-
-			size_t pos = _hash(val);
+			int pos = _hash(val);
 
 			// 平方探测法偏移量
-			int i = 1;
+			int d = 1;
 			// 控制正负交替
-			bool flag = true;
+			bool direction = true;
 
-			// FIXME: 其实可能找不到位置插入，对于平方探测法，只有当散列表长度为4*j+3(j=0,1,2,3...)的质数时才能够遍历到所有位置【数论】
+			// HACK: 其实可能找不到位置插入，对于平方探测法，只有当散列表长度为4*j+3(j=0,1,2,3...)的质数时才能够遍历到所有位置【数论】
 			while (true)
 			{
 				if (_data[pos].stat == EXIST && _data[pos].val == val)
@@ -124,27 +116,14 @@ namespace OpenAddressing
 					return true;
 				}
 
-				
 				// 平方探测法：
-				if (flag)
-				{
-					// 正向
-					pos = (pos + i * i) % _data.size();
-					flag = false;
-				}
-				else
-				{
-					// 反向
-					pos = (pos - i * i) % _data.size();
-					flag = true;
-					i++;
-				}
+				_setNextPos(pos, direction, d);
 			}
 		}
 
 		bool erase(T val)
 		{
-			size_t pos = find(val);
+			int pos = find(val);
 			if (pos == -1)
 				return false;
 
@@ -156,10 +135,10 @@ namespace OpenAddressing
 
 		int find(T val)
 		{
-			size_t pos = _hash(val);
+			int pos = _hash(val);
 
-			int i = 1;
-			bool flag = true;
+			int d = 1;
+			bool direction = true;
 			while (true)
 			{
 				// 如果位置为空，那么查找的元素就应该插入这里，结果没插，说明不存在
@@ -172,20 +151,7 @@ namespace OpenAddressing
 				else if (_data[pos].stat == EXIST && _data[pos].val == val)
 					return pos;
 				// 其他情况就继续迭代查找：
-
-				if (flag)
-				{
-					// 正向
-					pos = (pos + i * i) % _data.size();
-					flag = false;
-				}
-				else
-				{
-					// 反向
-					pos = (pos - i * i) % _data.size();
-					flag = true;
-					i++;
-				}
+				_setNextPos(pos, direction, d);
 			}
 		}
 
@@ -215,11 +181,60 @@ namespace OpenAddressing
 		}
 
 	private:
-		size_t _hash(T val)
+		/**
+		 * @brief 哈希函数
+		 * 
+		 * @param val 外部传入的需要存储的数值
+		 * @return int 经过哈希函数映射的位置
+		 */
+		int _hash(T val)
 		{
 			Functor functor;
-			size_t pos = functor(val) % _divisor;
+			int pos = functor(val) % _divisor;
 			return pos;
+		}
+
+		// 再散列
+		void _reHashing()
+		{
+			HashTable<T, Functor> newHashTable;
+			newHashTable._data.resize(_data.size() * resizeFactor);
+			newHashTable._n = _n;
+			newHashTable._size = _size;
+			newHashTable._setDivisor(newHashTable._data.size());
+
+			for (int i = 0; i < _data.size(); i++)
+			{
+				if (_data[i].stat != EMPTY) // 空位置数据不要插入扩容后的哈希表
+					newHashTable.insert(_data[i].val);
+			}
+
+			_data.swap(newHashTable._data);
+			_divisor = newHashTable._divisor;
+		}
+
+		/**
+		 * @brief 平方探测法获取下一个位置
+		 * 
+		 * @param pos 旧位置
+		 * @param direction 正向或反向; true: 正向, false: 反向
+		 * @param d 偏移量
+		 */
+		void _setNextPos(int &pos, bool &direction, int &d)
+		{
+			if (direction)
+			{
+				// 正向
+				pos = (pos + d * d) % _data.size();
+				direction = false;
+			}
+			else
+			{
+				// 反向
+				pos = (pos - d * d) % _data.size();
+				direction = true;
+				d++;
+			}
 		}
 
 		void _setDivisor(size_t num)
