@@ -37,13 +37,13 @@ namespace OpenAddressing
 
 	/**
 	 * @brief 默认的T类型映射为size_t类型的方法
-	 * 
-	 * @tparam T 
+	 *
+	 * @tparam T
 	 */
 	template <typename T>
 	struct DefaultFunctor
 	{
-		size_t operator()(const T &x)
+		size_t operator()(const T& x)
 		{
 			return (size_t)x;
 		}
@@ -53,7 +53,7 @@ namespace OpenAddressing
 	template <>
 	struct DefaultFunctor<string>
 	{
-		size_t operator()(const string &x)
+		size_t operator()(const string& x)
 		{
 			size_t hash = 0;
 			for (auto ch : x)
@@ -183,7 +183,7 @@ namespace OpenAddressing
 	private:
 		/**
 		 * @brief 哈希函数
-		 * 
+		 *
 		 * @param val 外部传入的需要存储的数值
 		 * @return int 经过哈希函数映射的位置
 		 */
@@ -215,12 +215,12 @@ namespace OpenAddressing
 
 		/**
 		 * @brief 平方探测法获取下一个位置
-		 * 
+		 *
 		 * @param pos 旧位置
 		 * @param direction 正向或反向; true: 正向, false: 反向
 		 * @param d 偏移量
 		 */
-		void _setNextPos(int &pos, bool &direction, int &d)
+		void _setNextPos(int& pos, bool& direction, int& d)
 		{
 			if (direction)
 			{
@@ -270,5 +270,226 @@ namespace OpenAddressing
 		size_t _n;
 		// 哈希表【有效】数据个数(EXIST)
 		size_t _size;
+	};
+}
+
+#include <memory>
+namespace SeparateChaining
+{
+	using std::cout;
+	using std::endl;
+	using std::string;
+	using std::swap;
+	using std::vector;
+
+	static const int initSize = 11;
+	static const int resizeFactor = 2;
+
+	template <typename T>
+	struct DefaultFunctor
+	{
+		size_t operator()(const T& x)
+		{
+			return (size_t)x;
+		}
+	};
+
+	template <>
+	struct DefaultFunctor<string>
+	{
+		size_t operator()(const string& x)
+		{
+			size_t hash = 0;
+			for (auto ch : x)
+			{
+				hash = hash * 131 + ch;
+			}
+			return hash;
+		}
+	};
+
+	template <typename T>
+	struct HashNode
+	{
+		T val;
+		HashNode<T>* next;
+
+		HashNode(T val = T())
+			: val(val), next(nullptr)
+		{
+		}
+	};
+
+	template <typename T, typename Functor = DefaultFunctor<T>>
+	class HashTable
+	{
+		using Node = HashNode<T>;
+
+	public:
+		HashTable()
+		{
+			_tables.resize(initSize, nullptr);
+			_n = 0;
+		}
+
+		bool insert(T val)
+		{
+			if (_n == _tables.size())
+				_rehashing();
+
+			if (find(val))
+				return false;
+
+			int pos = _hash(val);
+			// OPTIMIZE: 此处可以按序插入，形成有序链表，这样查找效率为提高
+			Node* newNode = new Node(val);
+			newNode->next = _tables[pos];
+			_tables[pos] = newNode;
+			_n++;
+
+			return true;
+		}
+
+		bool erase(T val)
+		{
+			int pos = _hash(val);
+
+			Node* parent = nullptr;
+			Node* cur = _tables[pos];
+			while (cur)
+			{
+				if (cur->val == val)
+				{
+					if (parent)
+						parent->next = cur->next;
+					else
+						_tables[pos] = _tables[pos]->next;
+
+					delete cur;
+					_n--;
+					return true;
+				}
+
+				parent = cur;
+				cur = cur->next;
+			}
+
+			return false;
+		}
+
+		bool find(T val)
+		{
+			int pos = _hash(val);
+
+			Node* cur = _tables[pos];
+			while (cur)
+			{
+				if (cur->val == val)
+					return true;
+
+				cur = cur->next;
+			}
+			return false;
+		}
+
+		size_t size() const
+		{
+			return _n;
+		}
+
+		bool empty() const
+		{
+			return _n == 0;
+		}
+
+		void Print()
+		{
+			for (int i = 0; i < _tables.size(); i++)
+			{
+				Node* cur = _tables[i];
+				while (cur)
+				{
+					cout << cur->val << " ";
+					cur = cur->next;
+				}
+			}
+			cout << endl;
+		}
+
+		~HashTable()
+		{
+			for (int i = 0; i < _tables.size(); i++)
+			{
+				Node* cur = _tables[i];
+				while (cur)
+				{
+					Node* next = cur->next;
+					delete cur;
+					cur = next;
+				}
+				// 不要忘记把哈希表各个初始节点置空，否则析构函数调用时将导致重复释放资源错误
+				_tables[i] = nullptr;
+			}
+		}
+
+	private:
+		int _hash(T val)
+		{
+			Functor functor;
+			return functor(val) % _tables.size();
+		}
+
+		void _rehashing()
+		{
+			HashTable<T, Functor> newHashTable;
+
+			// 我们希望哈希表长度为素数
+			int newSize = _tables.size() * resizeFactor;
+			while (!_isPrimeNum(newSize))
+			{
+				newSize++;
+			}
+			newHashTable._tables.resize(newSize, nullptr);
+
+			// 原哈希表的数据逐个重新插入到新哈希表中
+			for (int i = 0; i < _tables.size(); i++)
+			{
+				Node* cur = _tables[i];
+				while (cur)
+				{
+					Node* next = cur->next;
+
+					int pos = newHashTable._hash(cur->val);
+					cur->next = newHashTable._tables[pos];
+					newHashTable._tables[pos] = cur;
+					newHashTable._n++;
+
+					cur = next;
+				}
+				// 不要忘记把哈希表各个初始节点置空，否则析构函数调用时将导致重复释放资源错误
+				_tables[i] = nullptr;
+			}
+
+			swap(*this, newHashTable);
+		}
+
+		bool _isPrimeNum(size_t num)
+		{
+			if (num == 1 || num == 2)
+				return true;
+
+			for (int i = 2; i * i <= num; i++)
+			{
+				if (num % i == 0)
+					return false;
+			}
+
+			return true;
+		}
+
+	private:
+		vector<Node*> _tables;
+		// 有效数据个数
+		size_t _n;
 	};
 }
