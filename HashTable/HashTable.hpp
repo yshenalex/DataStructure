@@ -101,6 +101,7 @@ namespace OpenAddressing
 			{
 				if (_data[pos].stat == EXIST && _data[pos].val == val)
 				{
+					// 本来就有了还插入即插入失败
 					return false;
 				}
 
@@ -122,6 +123,9 @@ namespace OpenAddressing
 					_size++;
 					return true;
 				}
+
+				
+				// 平方探测法：
 				if (flag)
 				{
 					// 正向
