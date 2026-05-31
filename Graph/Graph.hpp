@@ -202,7 +202,7 @@ namespace matrix
 				}
 			}
 
-			if (size == n - 1) // 该算法不是百分之百能找到最小生成树，可能找不到，此时size!=n-1
+			if (size == n - 1) // 如果是非连通图将找到最小生成树（只有生成森林），此时size!=n-1
 			{
 				return totalW;
 			}
@@ -268,7 +268,7 @@ namespace matrix
 
 					for (int i = 0; i < n; i++) // 把刚加入最小生成树的边的终点相邻的边都加入优先级队列
 					{
-						if (!_matrix[min._dsti][i] != MAX_W && Y[i])
+						if (_matrix[min._dsti][i] != MAX_W && Y[i])
 						{
 							minque.push(Edge(min._dsti, i, _matrix[min._dsti][i]));
 						}
