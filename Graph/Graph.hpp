@@ -202,7 +202,7 @@ namespace matrix
 				}
 			}
 
-			if (size == n - 1) // 如果是非连通图将找到最小生成树（只有生成森林），此时size!=n-1
+			if (size == n - 1) // 如果是非连通图将无法找到最小生成树（只有生成森林），此时size!=n-1
 			{
 				return totalW;
 			}
