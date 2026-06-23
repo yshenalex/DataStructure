@@ -1,35 +1,9 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
 using namespace std;
 
-// 【BF算法】
-int BruteForce(string str, string sub)
-{
-	int lenStr = str.size(), lenSub = sub.size();
-	if (!lenStr || !lenSub)
-		return -1;
-
-	int i = 0, j = 0; // 记录主串和子串的下标
-	while (i < lenStr && j < lenSub)
-	{
-		if (str[i] == sub[j]) // 相同就继续比较
-		{
-			i++;
-			j++;
-		}
-		else // 不同的话，将j置为0，i回到刚刚出发比较的下一个节点，即i-j+1
-		{
-			i = i - j + 1;
-			j = 0;
-		}
-	}
-
-	if (j == lenSub) // 如果是子串遍历到终点，那就是找到了，i此次出发时返回下标
-		return i - j;
-
-	return -1; // 若是主串到终点，那就是没找到，返回-1
-}
 
 // 【KMP算法】
 void GetNext(string sub, vector<int> &next) // 获得next数组
@@ -123,32 +97,4 @@ int KMP(string str, string sub) // KMP算法
 	// 以上if判断条件不能写成：
 	// if (i >= lenStr) return -1;return i - j;
 	// 这样写的话，如果子串正好在主串末尾找到时就返回-1了
-}
-
-void testBF()
-{
-	cout << BruteForce("abcdef", "def") << endl;   // 3
-	cout << BruteForce("abcdefgh", "def") << endl; // 3
-	cout << BruteForce("abcdefgh", "ab") << endl;  // 0
-	cout << BruteForce("abcdefgh", "cdd") << endl; //-1
-}
-void testKMP()
-{
-	cout << KMP("abcdefabcddrf", "abc") << endl;  // 0
-	cout << KMP("abcdefabcddrf", "abe") << endl;  //-1
-	cout << KMP("abcdefabcddrf", "a") << endl;	  // 0
-	cout << KMP("abcdefabcddrf", "cdef") << endl; // 2
-	cout << KMP("abcdefabcddrf", "dd") << endl;	  // 9
-	cout << KMP("abcdefabcddrf", "de") << endl;	  // 3
-	cout << KMP("abcdefabcddrf", "drf") << endl;  // 10
-	cout << KMP("abc", "abc") << endl;			  // 0
-	cout << KMP("", "drf") << endl;				  //-1
-	cout << KMP("", "") << endl;				  //-1
-}
-
-int main()
-{
-	testBF();
-	testKMP();
-	return 0;
 }
