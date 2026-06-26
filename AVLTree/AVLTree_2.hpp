@@ -1,62 +1,103 @@
 #pragma once
+#include <stdlib.h>
 #include <iostream>
 #include <queue>
 using namespace std;
 
-template <class K, class V>
+
+/**
+ * @brief 二叉链表实现AVL树 
+ * 
+ * @tparam T 元素数据类型
+ */
+template <class T>
 struct AVLTreeNode
 {
-	pair<K, V> _kv;
-	int _height;
-	AVLTreeNode *_lchild;
-	AVLTreeNode *_rchild;
+	T value; // 节点数值
+	int height; // 节点高度
+	AVLTreeNode *lchild;
+	AVLTreeNode *rchild;
 
-	AVLTreeNode(const pair<K, V> kv)
-		: _kv(kv), _height(1), _lchild(nullptr), _rchild(nullptr)
-	{
-	}
+	AVLTreeNode(const T& x) : value(x), height(1), lchild(nullptr), rchild(nullptr) {}
 };
 
-template <class K, class V>
+template <class T>
 class AVLTree
 {
-	typedef AVLTreeNode<K, V> Node;
-
+	using TreeNode =  AVLTreeNode<T>;
 public:
 	AVLTree()
 		: _root(nullptr)
 	{
 	}
 
-	bool Insert(K &key)
+	~AVLTree()
 	{
+
 	}
+
+	bool insert(const T& x)
+	{
+
+	}
+
+	bool erase(const T& x)
+	{
+
+	}
+
+	TreeNode* find(const T& x)
+	{
+
+	}
+
 
 private:
-	bool _insert(Node *root, pair<K, V> kv)
+	TreeNode* _insert(TreeNode* root, const T& x)
 	{
-		if (!root)
+		if (root->value == x)
+			return root; // 什么都不用做
+		else if (root->value < x)
+			root->rchild = root->rchild == nullptr ? new TreeNode(x) : _insert(root->rchild, x); // 递归找到合适位置插入
+		else 
+			root->lchild = root->lchild == nullptr ? new TreeNode(x) : _insert(root->lchild, x);
+		
+		// 更新节点的高度
+		_updateHeight(root);
+
+		// 平衡修复
+
+
+	}
+
+	void _updateHeight(TreeNode* root)
+	{
+		if (root->lchild && root->rchild)
+			root->height = root->lchild->height > root->rchild->height ? root->lchild->height + 1 : root->rchild->height + 1;
+		else if (!root->lchild && root->rchild)
+			root->height = root->rchild->height + 1;
+		else if (root->lchild && !root->rchild)
+			root->height = root->lchild->height + 1;
+		// 左右子树都为空的情况什么都不用做，因为一个节点的height默认就是1
+	}
+
+	TreeNode* _rebalance(TreeNode* root)
+	{
+		if (abs(root->lchild->height - root->rchild->height) <= 1)
 		{
-			root = new Node(kv);
-			return true;
+			return root;
 		}
+		if (root->lchild->height - root->rchild->height == -2)
+		{
+			
+		}
+		else if (root->lchild->height - root->rchild->height == 2)
+		{
 
-		if (kv.first < root->_kv.first)
-			_Insert(root->_lchild, kv);
-		else if (kv.first > root->_kv.first)
-			_Insert(root->_rchild, kv);
-		else
-			return false;
-	}
-	void _getNewHeight(Node *root)
-	{
-		if (!root)
-			return;
-		if (!root->_lchild && !root->_rchild)
-			root->_height = root->_lchild->_height > root->_rchild->_height ? root->_lchild->_height + 1 : root->_rchild->_height + 1;
-		else if (!root->_lchild || !root->_rchild)
-			root->_height = root->_lchild == nullptr ? root->_rchild->_height + 1 : root->_lchild->_height + 1;
+		}
 	}
 
-	Node *_root;
+
+private:
+	TreeNode *_root;
 };
