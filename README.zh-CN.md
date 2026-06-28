@@ -142,25 +142,6 @@ DataStructure/
 
 ---
 
-## 构建与运行
-
-每个子目录下均有 `test.c` 或 `test.cpp` 测试文件，包含使用示例。
-
-**C 模块**（如 SeqList）：
-
-```bash
-cd SeqList
-gcc test.c SeqList.c -o test && ./test
-```
-
-**C++ 模块**（如 AVLTree）：
-
-```bash
-cd AVLTree
-g++ test.cpp -o test -std=c++11 && ./test
-```
-
----
 
 ## 开源许可
 

@@ -142,25 +142,6 @@ DataStructure/
 
 ---
 
-## Build & Run
-
-Each subdirectory contains a `test.c` or `test.cpp` file with usage examples.
-
-**C modules** (e.g., SeqList):
-
-```bash
-cd SeqList
-gcc test.c SeqList.c -o test && ./test
-```
-
-**C++ modules** (e.g., AVLTree):
-
-```bash
-cd AVLTree
-g++ test.cpp -o test -std=c++11 && ./test
-```
-
----
 
 ## License
 
