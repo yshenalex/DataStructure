@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <iostream>
 #include <queue>
-using namespace std;
-
+using std::queue;
+using std::cout;
 
 /**
- * @brief 二叉链表实现AVL树 
+ * @brief AVL树节点
  * 
  * @tparam T 元素数据类型
  */
@@ -21,9 +21,18 @@ struct AVLTreeNode
 	AVLTreeNode(const T& x) : value(x), height(1), lchild(nullptr), rchild(nullptr) {}
 };
 
+/**
+ * @brief 二叉链表实现AVL树 
+ * 
+ * @tparam T 元素数据类型
+ */
 template <class T>
 class AVLTree
 {
+	/**
+	 * @brief AVL树节点类型(AVLTreeNode<T>)的别名
+	 * 
+	 */
 	using TreeNode =  AVLTreeNode<T>;
 public:
 	AVLTree()
@@ -33,31 +42,58 @@ public:
 
 	~AVLTree()
 	{
-		// TODO
+		_destroy(_root);
+		_root = nullptr;
 	}
 
+	/**
+	 * @brief 插入操作
+	 * 
+	 * @param x 待插入的元素
+	 */
 	void insert(const T& x)
 	{
 		_root = _insert(_root, x);
 	}
 
+	/**
+	 * @brief 删除操作
+	 * 
+	 * @param x 待删除的元素
+	 * @return true 删除成功
+	 * @return false 删除失败
+	 */
 	bool erase(const T& x)
 	{
 		// TODO
 		return true;
 	}
 
+	/**
+	 * @brief 寻找数值为x的节点
+	 * 
+	 * @param x 
+	 * @return TreeNode* 指向节点的指针
+	 */
 	TreeNode* find(const T& x)
 	{
 		// TODO
 		return true;
 	}
 
+	/**
+	 * @brief 中序遍历
+	 * 
+	 */
 	void InOrder()
 	{
 		_InOrder(_root);
 	}
 
+	/**
+	 * @brief 层序遍历
+	 * 
+	 */
 	void LevelOrder()
 	{
 		queue<TreeNode*> q;
@@ -78,11 +114,17 @@ public:
 					q.push(node->rchild);
 			}
 
-			levelSize = q.size();
-			cout << endl;
+			levelSize = q.size(); // 控制每层输出
+			cout << "\n";
 		}
 	}
 
+	/**
+	 * @brief 判断该树是否平衡
+	 * 
+	 * @return true 
+	 * @return false 
+	 */
 	bool isBalance()
 	{
 		return _isBalance(_root);
@@ -141,11 +183,13 @@ private:
 	 */
 	TreeNode* _rebalance(TreeNode* root)
 	{	
+		// 已经平衡，无需操作
 		if (abs(_getHeight(root->lchild) - _getHeight(root->rchild)) <= 1)
 		{
 			return root;
 		}
 
+		// 以root为根的子树不平衡，开始修复平衡操作
 		if (_getHeight(root->lchild) - _getHeight(root->rchild) == -2)
 		{
 			// RR型
@@ -154,16 +198,16 @@ private:
 				return _rotateL(root);
 			}
 			// RL型
-			else 
+			else // _getHeight(root->rchild->lchild) > _getHeight(root->rchild->rchild)
 			{
 				root->rchild = _rotateR(root->rchild);
 				return _rotateL(root);
 			}
-			// 不会出现 root->rchild->lchild->height == root->rchild->rchild->height 情况
+			// 不会出现 _getHeight(root->rchild->lchild) == _getHeight(root->rchild->rchild) 情况
 
 	
 		}
-		else if (_getHeight(root->lchild) - _getHeight(root->rchild) == 2)
+		else // _getHeight(root->lchild) - _getHeight(root->rchild) == 2
 		{
 			// LL型
 			if (_getHeight(root->lchild->lchild) > _getHeight(root->lchild->rchild))
@@ -178,6 +222,8 @@ private:
 			}
 
 		}
+		// 不会出现其他情况
+		
 	}
 	
 	/**
@@ -234,6 +280,13 @@ private:
 
 	}
 
+	/**
+	 * @brief 判断以root为根的子树是否平衡
+	 * 
+	 * @param root 
+	 * @return true 
+	 * @return false 
+	 */
 	bool _isBalance(TreeNode* root)
 	{
 		if (!root)
@@ -245,6 +298,30 @@ private:
 	}
 
 
+	/**
+	 * @brief 递归销毁以root为根节点子树
+	 * 
+	 * @param root
+	 */
+	void _destroy(TreeNode* root) 
+	{
+		if (!root)
+			return;
+		// 先释放左右子树的内存
+		_destroy(root->lchild);
+		_destroy(root->rchild);
+		
+		// 最后释放当前节点内存
+		delete root;
+		// 释放完置空(因为只是形参，其实置不置空无所谓)
+		root = nullptr;
+	}
+
+
 private:
-	TreeNode *_root;
+	/**
+	 * @brief AVL树的根节点
+	 * 
+	 */
+	TreeNode *_root; 
 };
