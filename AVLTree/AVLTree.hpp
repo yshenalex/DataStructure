@@ -1,8 +1,10 @@
 #pragma once
-
+#include <utility>
 #include <iostream>
 #include <queue>
-using namespace std;
+using std::queue;
+using std::cout;
+using std::pair;
 
 template <class K, class V>
 struct AVLTreeNode
