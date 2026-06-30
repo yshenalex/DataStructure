@@ -13,9 +13,26 @@ using std::cout;
 template <class T>
 struct AVLTreeNode
 {
-	T value; // 节点数值
-	int height; // 节点高度
+	/**
+	 * @brief 节点数值
+	 * 
+	 */
+	T value;
+	/**
+	 * @brief 节点高度
+	 * 
+	 */
+	int height;
+
+	/**
+	 * @brief 左孩子
+	 * 
+	 */
 	AVLTreeNode *lchild;
+	/**
+	 * @brief 右孩子
+	 * 
+	 */
 	AVLTreeNode *rchild;
 
 	AVLTreeNode(const T& x) : value(x), height(1), lchild(nullptr), rchild(nullptr) {}
@@ -60,25 +77,10 @@ public:
 	 * @brief 删除操作
 	 * 
 	 * @param x 待删除的元素
-	 * @return true 删除成功
-	 * @return false 删除失败
 	 */
-	bool erase(const T& x)
+	void erase(const T& x)
 	{
-		// TODO
-		return true;
-	}
-
-	/**
-	 * @brief 寻找数值为x的节点
-	 * 
-	 * @param x 
-	 * @return TreeNode* 指向节点的指针
-	 */
-	TreeNode* find(const T& x)
-	{
-		// TODO
-		return true;
+		_erase(_root, x);
 	}
 
 	/**
@@ -133,6 +135,14 @@ public:
 
 
 private:
+
+	/**
+	 * @brief 递归从root为根节点的子树中插入数值为x的节点
+	 * 
+	 * @param root 
+	 * @param x 
+	 * @return TreeNode* 插入了x节点的新子树的根(由于平衡操作可能新根并非传入的形参root)
+	 */
 	TreeNode* _insert(TreeNode* root, const T& x)
 	{
 		// 最开始空树时直接插入
@@ -149,9 +159,67 @@ private:
 		// 更新节点的高度
 		_updateHeight(root);
 
-		// 递归回溯时进行平衡修复
+		// 调整完高度后才知道当前root为根的子树是否已经平衡，不平衡就继续调整到平衡，并返回新根节点
 		return _rebalance(root);
 	}
+
+	/**
+	 * @brief 递归从root为根节点的子树中删除数值为x的节点
+	 * 
+	 * @param root 
+	 * @param x 
+	 * @return TreeNode* 删除了x节点的新子树的根(由于平衡操作可能新根并非传入的形参root)
+	 */
+	TreeNode* _erase(TreeNode* root, const T& x)
+	{
+		if (!root)
+			return nullptr; // 这种情况属于删除失败了，也即树中找不到数值为x的结点
+		
+		
+		if (root->value < x)
+		{
+			root->rchild = _erase(root->rchild, x);
+		}
+		else if (root->value > x)
+		{
+			root->lchild = _erase(root->lchild, x);
+		}
+		else
+		{
+			// 1.若删除的结点是叶子，直接删。
+			if (!root->lchild && !root->rchild)
+			{
+				delete root;
+				root = nullptr;
+				return nullptr;
+			}
+			// 2.若删除的结点只有一个子树，用子树顶替删除位置
+			else if (!root->lchild || !root->rchild)
+			{
+				TreeNode* newroot = !root->lchild ? root->rchild : root->lchild;
+				delete root;
+				root = nullptr;
+				return newroot; 
+			}
+			// 3.若删除的结点有两棵子树，用前驱（或后继）结点顶替，并转换为对前驱（或后继）结点的删除。
+			else
+			{
+				TreeNode* prev = root->lchild; // 这里选择用前驱结点替代
+				while (prev->rchild) // 找到root的前驱节点
+					prev = prev->rchild;
+				
+				root->value = prev->value; // 前驱节点的值替换当前节点的值
+				// 接下来就要删除前驱节点，由于我们采用递归函数，不能直接"跳跃"删除结点，因此需要从root左孩子递归删除
+				root->lchild = _erase(root->lchild, prev->value); // 由于我们设计的AVL树没有重复元素值的特性，因此找prev->value就是前驱节点
+			}
+		}
+
+		// 利用递归返回时从下往上调整节点高度
+		_updateHeight(root);
+		// 调整完高度后才知道当前root为根的子树是否已经平衡，不平衡就继续调整到平衡，并返回新根节点
+		return _rebalance(root);
+	}
+
 
 	/**
 	 * @brief 获取某一节点的高度
