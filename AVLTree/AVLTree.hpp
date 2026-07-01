@@ -109,6 +109,8 @@ public:
 				break;
 			}
 		}
+
+		return true;
 	}
 
 	void InOrder()
@@ -288,8 +290,8 @@ private:
 		if (!root)
 			return true;
 
-		int leftHeight = _Height(_root->_left);
-		int rightHeight = _Height(_root->_right);
+		int leftHeight = _Height(root->_left);
+		int rightHeight = _Height(root->_right);
 		int diff = rightHeight - leftHeight;
 
 		if (abs(diff) >= 2) // 所有子树的左右子树高度差都不超过1，就是平衡树
