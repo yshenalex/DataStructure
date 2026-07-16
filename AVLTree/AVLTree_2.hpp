@@ -4,6 +4,7 @@
 #include <queue>
 using std::queue;
 using std::cout;
+using std::endl;
 
 /**
  * @brief AVL树节点
@@ -80,7 +81,7 @@ public:
 	 */
 	void erase(const T& x)
 	{
-		_erase(_root, x);
+		_root = _erase(_root, x);
 	}
 
 	/**
@@ -99,7 +100,8 @@ public:
 	void LevelOrder()
 	{
 		queue<TreeNode*> q;
-		q.push(_root);
+		if (_root) // 只有根节点非空，即AVL至少有一个节点时才合法
+			q.push(_root);
 		int levelSize = q.size();
 		
 		while (!q.empty())
@@ -108,7 +110,7 @@ public:
 			{
 				TreeNode* node = q.front();
 				q.pop();
-				cout << node->value << " ";
+				cout << node->value << "["<< node->height << "]" << " ";
 				
 				if (node->lchild)
 					q.push(node->lchild);
@@ -343,7 +345,7 @@ private:
 			return;
 
 		_InOrder(root->lchild);
-		cout << root->value << " ";
+		cout << root->value << "["<< root->height << "]" << " ";
 		_InOrder(root->rchild);
 
 	}
@@ -359,7 +361,7 @@ private:
 	{
 		if (!root)
 			return true;
-		if (abs(_getHeight(root->lchild) - _getHeight(root->rchild) >= 2))
+		if (abs(_getHeight(root->lchild) - _getHeight(root->rchild)) >= 2)
 			return false;
 
 		return _isBalance(root->lchild) && _isBalance(root->rchild); 

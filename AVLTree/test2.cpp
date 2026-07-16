@@ -176,13 +176,16 @@ void testAVLTree8()
     for(int x:arr) avl.insert(x);
 
     cout << "初始中序："; avl.InOrder();
+    cout << "\n初始层序：\n"; avl.LevelOrder();
     // 依次全部删除
     int delList[] = {6,3,9,2,4,7,10};
     for(int x : delList)
     {
-        cout << "\nerase(" << x << ") 后中序：";
         avl.erase(x);
+        cout << "\nerase(" << x << ") 后中序：";
         avl.InOrder();
+        cout << "\nerase(" << x << ") 后层序：\n";
+        avl.LevelOrder();
         cout << " 平衡：" << avl.isBalance();
     }
 
