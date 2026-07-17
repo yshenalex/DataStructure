@@ -147,16 +147,16 @@ private:
 	 */
 	TreeNode* _insert(TreeNode* root, const T& x)
 	{
-		// 最开始空树时直接插入
+		// 空节点直接插入(含初始根空情况和插入到左右孩子为空情况)
 		if (!root)
 			return new TreeNode(x);
 
 		if (root->value == x)
 			return root; // 什么都不用做
 		else if (root->value < x)
-			root->rchild = root->rchild == nullptr ? new TreeNode(x) : _insert(root->rchild, x); // 递归找到合适位置插入
+			root->rchild = _insert(root->rchild, x); // 递归找到合适位置插入
 		else 
-			root->lchild = root->lchild == nullptr ? new TreeNode(x) : _insert(root->lchild, x);
+			root->lchild = _insert(root->lchild, x);
 		
 		// 更新节点的高度
 		_updateHeight(root);
