@@ -78,7 +78,7 @@ void LevelOrder(TreeNode *root) // 层序遍历
 	Queue q;
 	QueueInit(&q);
 
-	if (!root) // 根节点非空才合法
+	if (root) // 根节点非空才合法
 		QueuePush(&q, root); // 根节点入队列
 
 	while (!QueueEmpty(&q)) // 只要队列不为空就循环继续
