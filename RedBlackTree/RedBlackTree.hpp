@@ -4,9 +4,7 @@
 enum Color
 {
 	RED,
-	BLACK,
-	RED_BLACK,
-	BLACK_BLACK
+	BLACK
 };
 
 template <typename T>
